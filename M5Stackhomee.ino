@@ -1,7 +1,5 @@
 #include <M5Core2.h>
 #include <WiFi.h>
-//#include <WebServer.h>
-//#include <ESPmDNS.h>
 #include <ArduinoJson.h>
 #include <Arduino.h>
 #include <HTTPClient.h>
@@ -19,9 +17,8 @@ int seite = 0;
 int rssiold = 0;
 uint8_t * payload1;
 float lasttime = 0;
-DynamicJsonDocument doc(ESP.getMaxAllocHeap());
 
-//WebServer server(80);
+DynamicJsonDocument doc(ESP.getMaxAllocHeap());
 
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP);
@@ -75,24 +72,11 @@ void setup() {
   Serial.println(ssid);
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
-  Serial.println(WiFi.RSSI());
-  //  if (MDNS.begin("esp32")) {
-  //  Serial.println("MDNS responder started");
-  //}
-  //server.begin();
   timeClient.begin();
   timeClient.setTimeOffset(3600);
   M5.Lcd.setFont(FSS12);
   M5.Buttons.draw();
   myButton.longPressTime = 700;
-  // M5.Lcd.setTextColor(YELLOW);
-  //M5.Lcd.setCursor(30 , 230);
-  //M5.Lcd.print("Seite 1");
-  //M5.Lcd.setTextColor(WHITE);
-  //M5.Lcd.setCursor(135 , 230);
-  // M5.Lcd.print("Seite 2");
-  // M5.Lcd.setCursor(245 , 230);
-  // M5.Lcd.print("Seite 3");
   M5.Axp.SetLed(0);
   // Websocket Beginn
   webSocket.setExtraHeaders("protocolVersion: 13, origin: M5IP ,handshakeTimeout: 5000");
@@ -104,23 +88,17 @@ void setup() {
 
 void loop() {
   M5.update();
-  //server.handleClient();
-
-  //E_TAP, E_DBLTAP, E_PRESSED, E_LONGPRESSED und E_DRAGGED
-  //E_TOUCH, E_MOVE und E_RELEASE
   pagemenu();
   webSocket.loop();
   cellular();
   timeClient.update();
   ntp();
-
 }
 
 void ntp() {
   if (lasttime != timeClient.getMinutes()) {
     M5.Lcd.fillRect(0, 0, 100, 30, BLACK);
     M5.Lcd.setCursor(0, 24);
-    //M5.Lcd.print(timeClient.getFormattedTime());
     M5.Lcd.print(timeClient.getHours());
     M5.Lcd.print(":");
     if (timeClient.getMinutes() < 10) {
@@ -145,9 +123,6 @@ void geste() {
     M5.Lcd.setCursor(50, 230);
   }
 }
-
-
-
 
 void hexdump(const void *mem, uint32_t len, uint8_t cols = 16) {
   const uint8_t* src = (const uint8_t*) mem;
@@ -203,9 +178,7 @@ void webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
 void icon() {
   M5.Lcd.drawPngFile(SD, "/icon/link-variant-off.png", 280, 200);
   M5.Lcd.drawPngFile(SD, "/icon/lightning-bolt-outline.png", 1, 200);
-  //M5.Lcd.drawPngFile(SD, "/icon/thermometer-lines24.png", 180, 6);
   M5.Lcd.drawPngFile(SD, "/icon/temperature-celsius.png", 240, 4);
-  //M5.Lcd.drawPngFile(SD, "/icon/home-lock.png", 100, 0);
   M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on-outline24.png", 10, 50);// Button 1 off
   M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on-outline24.png", 10, 105);// Button 2 off
   M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on-outline24.png", 10, 160);// Button 3 off
@@ -213,30 +186,22 @@ void icon() {
   M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on-outline24.png", 170, 105);// Button 5 off
   M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on-outline24.png", 170, 160);// Button 6 off
 
-  //M5.Lcd.drawPngFile(SD, "/icon/memw.png", 180, 6);
 }
 void pagemenu() {
   if (Page1.event == E_TOUCH) {
     seite = 0;
     M5.Lcd.drawPngFile(SD, "/icon/lightning-bolt-outline.png", 1, 200);
     webSocket.sendTXT("GET:/nodes/-1");
-    //icon();
-    //   page1();
   };
   if (Page2.event == E_TOUCH) {
     seite = 1;
     M5.Lcd.writecommand(ILI9341_DISPOFF);
     M5.Lcd.setBrightness(0);
-    // page2();
-    //M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on-outline24.png", 10, 50);
   };
   if (Page3.event == E_TOUCH) {
     seite = 2;
     M5.Lcd.writecommand(ILI9341_DISPON);
     M5.Lcd.setBrightness(100);
-    // page3();
-    //webSocket.sendTXT("GET:/attributes/1786");
-    //M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on24.png", 10, 50);
   };
 }
 
@@ -261,7 +226,6 @@ void cellular() {
 
 void attribute() {
   //JSON Dokument erstellen
-  //DynamicJsonDocument doc(ESP.getMaxAllocHeap());
   deserializeJson(doc, payload1);
   JsonObject object = doc.as<JsonObject>();
   // Variablen erstellen
@@ -315,48 +279,18 @@ void attribute() {
   //homee MEMORY UND CPU SOWIE SSD
   if (doc["attribute"]["type"].as<float>() == 311.00) {
     M5.Lcd.setTextColor(WHITE);
-    //if ((doc["attribute"]["current_value"].as<float>() > 50.00) && (doc["attribute"]["current_value"].as<float>() < 75.00)) {
-    //M5.Lcd.fillRoundRect(1, 1, 98 , 23, 10, YELLOW);
-    //M5.Lcd.setTextColor(BLACK);
-    //} else if (doc["attribute"]["current_value"].as<float>() > 75.00) {
-    //M5.Lcd.fillRoundRect(1, 1, 98 , 23, 10, RED);
-    //M5.Lcd.setTextColor(WHITE);
-    //} else
-    //M5.Lcd.fillRoundRect(26, 1, 78 , 23, 10, BLACK);
-    //M5.Lcd.setCursor(26, 18);
-    //M5.Lcd.printf("%6.1f%%", doc["attribute"]["current_value"].as<float>());
     Serial.print("Memory: ");
     Serial.print(doc["attribute"]["current_value"].as<float>(), 2);
     Serial.println(doc["attribute"]["unit"].as<char*>());
   };
   if (doc["attribute"]["type"].as<float>() == 312.00) {
     M5.Lcd.setTextColor(WHITE);
-    //if ((doc["attribute"]["current_value"].as<float>() > 50.00) && (doc["attribute"]["current_value"].as<float>() < 75.00)) {
-    //M5.Lcd.fillRoundRect(106, 1, 98 , 23, 10, YELLOW);
-    //M5.Lcd.setTextColor(BLACK);
-    //} else if (doc["attribute"]["current_value"].as<float>() > 75.00) {
-    //M5.Lcd.fillRoundRect(106, 1, 98 , 23, 10, RED);
-    //M5.Lcd.setTextColor(WHITE);
-    //} else
-    //M5.Lcd.fillRoundRect(106, 1, 98 , 23, 10, BLACK);
-    //M5.Lcd.setCursor(114, 18);
-    //M5.Lcd.printf("C %6.1f%%", doc["attribute"]["current_value"].as<float>());
     Serial.print("Prozessor: ");
     Serial.print(doc["attribute"]["current_value"].as<float>(), 2);
     Serial.println(doc["attribute"]["unit"].as<char*>());
   };
   if (doc["attribute"]["type"].as<float>() == 313.00) {
     M5.Lcd.setTextColor(WHITE);
-    //if ((doc["attribute"]["current_value"].as<float>() > 50.00) && (doc["attribute"]["current_value"].as<float>() < 75.00)) {
-    //M5.Lcd.fillRoundRect(211, 1, 98 , 23, 10, YELLOW);
-    //M5.Lcd.setTextColor(BLACK);
-    //} else if (doc["attribute"]["current_value"].as<float>() > 75.00) {
-    //M5.Lcd.fillRoundRect(211, 1, 98 , 23, 10, RED);
-    // M5.Lcd.setTextColor(WHITE);
-    //} else
-    //M5.Lcd.fillRoundRect(211, 1, 98 , 23, 10, BLACK);
-    //M5.Lcd.setCursor(218, 18);
-    // M5.Lcd.printf("S %6.1f%%", doc["attribute"]["current_value"].as<float>());
     Serial.print("UseStorage: ");
     Serial.print(doc["attribute"]["current_value"].as<float>(), 2);
     Serial.println(doc["attribute"]["unit"].as<char*>());
@@ -391,7 +325,7 @@ void attribute() {
       M5.Lcd.fillRect(180, 0, 60 , 36, BLACK);
       M5.Lcd.setCursor(190, 24);
       M5.Lcd.printf("%6.1f ", current_value);
-    }//webSocket.sendTXT("GET:/nodes/-1");
+    }
   };
   //Sideboard
   if (attributid == 1769.00) {
@@ -414,14 +348,8 @@ void disp() {
   delay(2000);
   M5.Lcd.writecommand(ILI9341_DISPOFF);
   M5.Lcd.setBrightness(0);
-  //M5.Axp.ScreenBreath(7);
-  //  M5.Axp.SetLDO2(false);
-  //M5.Axp.SetLDO3(false);
-  // M5.Speaker.beep();
-  delay (2000);
+    delay (2000);
   M5.Lcd.writecommand(ILI9341_DISPON);
   M5.Lcd.setBrightness(100);
-  //M5.Axp.ScreenBreath(15);
-  // M5.Axp.SetLDO2(true);
-  //M5.Axp.SetLDO3(true);
+  
 }
