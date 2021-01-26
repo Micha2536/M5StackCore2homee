@@ -234,88 +234,88 @@ void attribute() {
   float current_value = doc["attribute"]["current_value"].as<float>();
 
   //Wetter icon
-  if ((doc["node"]["attributes"][3]["type"].as<float>() == 243.00) || (attributid == 243.00)) {
+  if ((doc["node"]["attributes"][3]["type"].as<float>() == 243) || (attributid == 243)) {
     Serial.println(doc["node"]["attributes"][3]["current_value"].as<float>());
-    if ((doc["node"]["attributes"][3]["current_value"].as<float>() == 7.00) || ( current_value == 7.00)) {
+    if ((doc["node"]["attributes"][3]["current_value"].as<float>() == 7) || ( current_value == 7)) {
       M5.Lcd.drawPngFile(SD,  "/icon/weather-cloudy.png", 140, 0);
     }
-    else if ((doc["node"]["attributes"][3]["current_value"].as<float>() == 8.00) || ( current_value == 8.00)) {
+    else if ((doc["node"]["attributes"][3]["current_value"].as<float>() == 8) || ( current_value == 8)) {
       M5.Lcd.drawPngFile(SD,  "/icon/weather-partly-cloudy.png", 140, 0);
     }
-    else if ((doc["node"]["attributes"][3]["current_value"].as<float>() == 9.00) || ( current_value == 9.00)) {
+    else if ((doc["node"]["attributes"][3]["current_value"].as<float>() == 9) || ( current_value == 9)) {
       M5.Lcd.drawPngFile(SD,  "/icon/weather-night-partly-cloudy.png", 140, 0 );
     }
-    else if ((doc["node"]["attributes"][3]["current_value"].as<float>() == 1.00) || ( current_value == 1.00)) {
+    else if ((doc["node"]["attributes"][3]["current_value"].as<float>() == 1) || ( current_value == 1)) {
       M5.Lcd.drawPngFile(SD,  "/icon/weather-night.png", 140, 0 );
     }
-    else if ((doc["node"]["attributes"][3]["current_value"].as<float>() == 0.00) || ( current_value == 0.00)) {
+    else if ((doc["node"]["attributes"][3]["current_value"].as<float>() == 0) || ( current_value == 0)) {
       M5.Lcd.drawPngFile(SD,  "/icon/weather-sunny.png", 140, 0 );
     }
-    else if ((doc["node"]["attributes"][3]["current_value"].as<float>() == 2.00) || ( current_value == 2.00)) {
+    else if ((doc["node"]["attributes"][3]["current_value"].as<float>() == 2) || ( current_value == 2)) {
       M5.Lcd.drawPngFile(SD,  "/icon/weather-rainy.png", 140, 0 );
     }
-    else if ((doc["node"]["attributes"][3]["current_value"].as<float>() == 3.00) || ( current_value == 3.00)) {
+    else if ((doc["node"]["attributes"][3]["current_value"].as<float>() == 3) || ( current_value == 3)) {
       M5.Lcd.drawPngFile(SD,  "/icon/weather-snowy.png", 140, 0 );
     }
-    else if ((doc["node"]["attributes"][3]["current_value"].as<float>() == 4.00) || ( current_value == 4.00)) {
+    else if ((doc["node"]["attributes"][3]["current_value"].as<float>() == 4) || ( current_value == 4)) {
       M5.Lcd.drawPngFile(SD,  "/icon/weather-snowy-rainy.png", 140, 0 );
     }
-    else if ((doc["node"]["attributes"][3]["current_value"].as<float>() == 5.00) || ( current_value == 5.00)) {
+    else if ((doc["node"]["attributes"][3]["current_value"].as<float>() == 5) || ( current_value == 5)) {
       M5.Lcd.drawPngFile(SD,  "/icon/weather-windy.png", 140, 0 );
     }
-    else if ((doc["node"]["attributes"][3]["current_value"].as<float>() == 6.00) || ( current_value == 6.00)) {
+    else if ((doc["node"]["attributes"][3]["current_value"].as<float>() == 6) || ( current_value == 6)) {
       M5.Lcd.drawPngFile(SD,  "/icon/weather-fog.png", 140, 0 );
     }
-    else if ((doc["node"]["attributes"][3]["current_value"].as<float>() == 10.00) || ( current_value == 10.00)) {
+    else if ((doc["node"]["attributes"][3]["current_value"].as<float>() == 10) || ( current_value == 10)) {
       M5.Lcd.drawPngFile(SD,  "/icon/weather-hail.png", 140, 0 );
     }
-    else if ((doc["node"]["attributes"][3]["current_value"].as<float>() == 11.00) || ( current_value == 11.00)) {
+    else if ((doc["node"]["attributes"][3]["current_value"].as<float>() == 11) || ( current_value == 11)) {
       M5.Lcd.drawPngFile(SD,  "/icon/weather-lightning.png", 140, 0 );
     }
-    else if ((doc["node"]["attributes"][3]["current_value"].as<float>() == 12.00) || ( current_value == 12.00)) {
+    else if ((doc["node"]["attributes"][3]["current_value"].as<float>() == 12) || ( current_value == 12)) {
       M5.Lcd.drawPngFile(SD,  "/icon/weather-windy-variant.png", 140, 0 );
     }
   };
   //homee MEMORY UND CPU SOWIE SSD
-  if (doc["attribute"]["type"].as<float>() == 311.00) {
+  if (doc["attribute"]["type"].as<float>() == 311) {
     M5.Lcd.setTextColor(WHITE);
     Serial.print("Memory: ");
     Serial.print(doc["attribute"]["current_value"].as<float>(), 2);
     Serial.println(doc["attribute"]["unit"].as<char*>());
   };
-  if (doc["attribute"]["type"].as<float>() == 312.00) {
+  if (doc["attribute"]["type"].as<float>() == 312) {
     M5.Lcd.setTextColor(WHITE);
     Serial.print("Prozessor: ");
     Serial.print(doc["attribute"]["current_value"].as<float>(), 2);
     Serial.println(doc["attribute"]["unit"].as<char*>());
   };
-  if (doc["attribute"]["type"].as<float>() == 313.00) {
+  if (doc["attribute"]["type"].as<float>() == 313) {
     M5.Lcd.setTextColor(WHITE);
     Serial.print("UseStorage: ");
     Serial.print(doc["attribute"]["current_value"].as<float>(), 2);
     Serial.println(doc["attribute"]["unit"].as<char*>());
   };
   //Gesamtverbrauch LEISTUNG IN WATT
-  if (attributid == 3028.00) {
+  if (attributid == 3028) {
     M5.Lcd.fillRect(36, 205, 98 , 23, BLACK);
     M5.Lcd.setCursor(36, 225);
     M5.Lcd.printf("%6.1f W", current_value);
   };
   //Schloss Status
-  if (attributid == 2905.00) {
-    if (current_value == 1.00) {
+  if (attributid == 2905) {
+    if (current_value == 1) {
       M5.Lcd.fillRect(100, 0, 35 , 35, BLACK);
       M5.Lcd.drawPngFile(SD, "/icon/home-lock.png", 100, 0);
     }
-    if (current_value == 0.00) {
+    if (current_value == 0) {
       M5.Lcd.fillRect(100, 0, 35 , 35, BLACK);
       M5.Lcd.drawPngFile(SD, "/icon/home-lock-open.png", 100, 0);
     };
   };
 
   // Temperatur Outdoor
-  if (attributid == 1786.00) {
-    if ((current_value > 9.99) || ( current_value < 0.00)) {
+  if (attributid == 1786) {
+    if ((current_value > 9.99) || ( current_value < 0)) {
       M5.Lcd.fillRect(180, 0, 60 , 36, BLACK);
       M5.Lcd.setCursor(181, 24);
       Serial.println(current_value);
@@ -328,11 +328,11 @@ void attribute() {
     }
   };
   //Sideboard
-  if (attributid == 1769.00) {
-    if (current_value == 1.00) {
+  if (attributid == 1769) {
+    if (current_value == 1) {
       M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on24.png", 10, 50);
     }
-    if (current_value == 0.00) {
+    if (current_value == 0) {
       M5.Lcd.fillRect(10, 50, 24 , 24, BLACK);
       M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on-outline24.png", 10, 50);
     }
