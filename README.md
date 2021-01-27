@@ -18,7 +18,24 @@ webSocket.begin("homeeIP", 7681, "/connection?access_token=YOURTOKEN", "v2");
 
 The attributID and nodeID find under the https://terminal.pascalmattes.de/
 
-The button have no function , this come later.
+New config for the button
+
+// conficuration Wlan
+
+const char* ssid = "SSID";
+
+const char* password = "PASSWORD";
+
+//configuration Websocket
+
+const char* token =  "/connection?access_token=YOURTOKEN";
+
+const char* homeeip = "HOMEEIP";
+
+// configuration Button   Name, NodeID , AttributID
+
+const char* bn1[] = {"Sideboard", "555", "1769"};
+
 
 
 The folder icon must upload on the SD Card
