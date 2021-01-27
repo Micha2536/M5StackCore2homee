@@ -10,9 +10,21 @@
 WebSocketsClient webSocket;
 
 
-const char* ssid = "";
-const char* password = "";
+// conficuration Wlan
+const char* ssid = "SSID";
+const char* password = "PASSWORD";
+//configuration Websocket
+const char* token =  "/connection?access_token=YOURTOKEN";
+const char* homeeip = "HOMEEIP";
+// configuration Button   Name, NodeID , AttributID
+const char* bn1[] = {"Sideboard", "555", "1769"};
+const char* bn2[] = {"Couch", "1022", "2691"};
+const char* bn3[] = {"TV Licht", "67", "262"};
+const char* bn4[] = {"Erker L", "1020", "2679"};
+const char* bn5[] = {"Erker R", "1023", "2698"};
+const char* bn6[] = {"Matmos", "266", "1087"};
 
+float bnstate[20];
 int seite = 0;
 int rssiold = 0;
 uint8_t * payload1;
@@ -40,12 +52,12 @@ int checkSDCard() {
 }
 
 
-Button myButton(5, 38, 150, 50, false, "Sideboard", {BLACK, WHITE, WHITE});
-Button myButton2(5, 93, 150, 50, false, "Couch", {BLACK, WHITE, WHITE});
-Button myButton3(5, 148, 150, 50, false, "TV Licht", {BLACK, WHITE, WHITE});
-Button myButton4(165, 38, 150, 50, false, "Erker L", {BLACK, WHITE, WHITE});
-Button myButton5(165, 93, 150, 50, false, "Erker R", {BLACK, WHITE, WHITE});
-Button myButton6(165, 148, 150, 50, false, "Matmos", {BLACK, WHITE, WHITE});
+Button myButton(5, 38, 150, 50, false, bn1[0], {BLACK, WHITE, WHITE});
+Button myButton2(5, 93, 150, 50, false, bn2[0], {BLACK, WHITE, WHITE});
+Button myButton3(5, 148, 150, 50, false, bn3[0], {BLACK, WHITE, WHITE});
+Button myButton4(165, 38, 150, 50, false, bn4[0], {BLACK, WHITE, WHITE});
+Button myButton5(165, 93, 150, 50, false, bn5[0], {BLACK, WHITE, WHITE});
+Button myButton6(165, 148, 150, 50, false, bn6[0], {BLACK, WHITE, WHITE});
 
 
 
@@ -78,9 +90,9 @@ void setup() {
   M5.Buttons.draw();
   myButton.longPressTime = 700;
   M5.Axp.SetLed(0);
-  // Websocket Beginn
-  webSocket.setExtraHeaders("protocolVersion: 13, origin: M5IP ,handshakeTimeout: 5000");
-  webSocket.begin("homeeip", 7681, "/connection?access_token=deintoken", "v2");
+ // Websocket Beginn
+  webSocket.setExtraHeaders("protocolVersion: 13, origin: 192.168.178.80 ,handshakeTimeout: 5000");
+  webSocket.begin(homeeip, 7681, token, "v2");
   webSocket.onEvent(webSocketEvent);
   webSocket.setReconnectInterval(5000);
   icon();
@@ -93,6 +105,7 @@ void loop() {
   cellular();
   timeClient.update();
   ntp();
+  buttonrequest();
 }
 
 void ntp() {
@@ -190,8 +203,7 @@ void icon() {
 void pagemenu() {
   if (Page1.event == E_TOUCH) {
     seite = 0;
-    M5.Lcd.drawPngFile(SD, "/icon/lightning-bolt-outline.png", 1, 200);
-    webSocket.sendTXT("GET:/nodes/-1");
+    webSocket.sendTXT("GET:/nodes/-1"); // 
   };
   if (Page2.event == E_TOUCH) {
     seite = 1;
@@ -234,7 +246,7 @@ void attribute() {
   float current_value = doc["attribute"]["current_value"].as<float>();
 
   //Wetter icon
-  if ((doc["node"]["attributes"][3]["type"].as<float>() == 243) || (attributid == 243)) {
+  if ((doc["node"]["attributes"][3]["type"].as<float>() == 243) || (attributtype == 243)) {
     Serial.println(doc["node"]["attributes"][3]["current_value"].as<float>());
     if ((doc["node"]["attributes"][3]["current_value"].as<float>() == 7) || ( current_value == 7)) {
       M5.Lcd.drawPngFile(SD,  "/icon/weather-cloudy.png", 140, 0);
@@ -313,8 +325,8 @@ void attribute() {
     };
   };
 
-  // Temperatur Outdoor
-  if (attributid == 1786) {
+  // Temperatur LOKAL TODAY
+  if (attributtype == 244) {
     if ((current_value > 9.99) || ( current_value < 0)) {
       M5.Lcd.fillRect(180, 0, 60 , 36, BLACK);
       M5.Lcd.setCursor(181, 24);
@@ -327,14 +339,134 @@ void attribute() {
       M5.Lcd.printf("%6.1f ", current_value);
     }
   };
-  //Sideboard
-  if (attributid == 1769) {
+ //Button status
+  if (attributid == atof(bn1[2])) {
     if (current_value == 1) {
+      bnstate[1] = 1;
       M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on24.png", 10, 50);
     }
     if (current_value == 0) {
+      bnstate[1] = 0;
       M5.Lcd.fillRect(10, 50, 24 , 24, BLACK);
       M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on-outline24.png", 10, 50);
+    }
+  }
+  if (attributid == atof(bn2[2])) {
+    if (current_value == 1) {
+      bnstate[2] = 1;
+      M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on24.png", 10, 105);
+    }
+    if (current_value == 0) {
+      bnstate[2] = 0;
+      M5.Lcd.fillRect(10, 105, 24 , 24, BLACK);
+      M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on-outline24.png", 10, 105);
+    }
+  }
+  if (attributid == atof(bn3[2])) {
+    if (current_value == 1) {
+      bnstate[3] = 1;
+      M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on24.png", 10, 160);
+    }
+    if (current_value == 0) {
+      bnstate[3] = 0;
+      M5.Lcd.fillRect(10, 160, 24 , 24, BLACK);
+      M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on-outline24.png", 10, 160);
+    }
+  }
+  if (attributid == atof(bn4[2])) {
+    if (current_value == 1) {
+      bnstate[4] = 1;
+      M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on24.png", 170, 50);
+    }
+    if (current_value == 0) {
+      bnstate[1] = 0;
+      M5.Lcd.fillRect(170, 50, 24 , 24, BLACK);
+      M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on-outline24.png", 170, 50);
+    }
+  }
+  if (attributid == atof(bn5[2])) {
+    if (current_value == 1) {
+      bnstate[5] = 1;
+      M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on24.png", 170, 105);
+    }
+    if (current_value == 0) {
+      bnstate[5] = 0;
+      M5.Lcd.fillRect(170, 105, 24 , 24, BLACK);
+      M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on-outline24.png", 170, 105);
+    }
+  }
+  if (attributid == atof(bn6[2])) {
+    if (current_value == 1) {
+      bnstate[6] = 1;
+      M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on24.png", 170, 160);
+    }
+    if (current_value == 0) {
+      bnstate[6] = 0;
+      M5.Lcd.fillRect(170, 160, 24 , 24, BLACK);
+      M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on-outline24.png", 170, 160);
+    }
+  }
+}
+
+void buttonrequest() {
+  if (myButton.event == E_TOUCH ) {
+    if (bnstate[1] == 1.00) {
+      String str  = String("PUT:/nodes/")+String(bn1[1])+String("/attributes/")+String(bn1[2])+String("?target_value=0");
+      webSocket.sendTXT(str);
+    }
+    else if ( bnstate[1] == 0.00) {
+       String str  = String("PUT:/nodes/")+String(bn1[1])+String("/attributes/")+String(bn1[2])+String("?target_value=1");
+      webSocket.sendTXT(str);
+    }
+  }
+   if (myButton2.event == E_TOUCH ) {
+    if (bnstate[2] == 1.00) {
+      String str  = String("PUT:/nodes/")+String(bn2[1])+String("/attributes/")+String(bn2[2])+String("?target_value=0");
+      webSocket.sendTXT(str);
+    }
+    else if ( bnstate[2] == 0.00) {
+       String str  = String("PUT:/nodes/")+String(bn2[1])+String("/attributes/")+String(bn2[2])+String("?target_value=1");
+      webSocket.sendTXT(str);
+    }
+  }
+  if (myButton3.event == E_TOUCH ) {
+    if (bnstate[3] == 1.00) {
+      String str  = String("PUT:/nodes/")+String(bn3[1])+String("/attributes/")+String(bn3[2])+String("?target_value=0");
+      webSocket.sendTXT(str);
+    }
+    else if ( bnstate[3] == 0.00) {
+       String str  = String("PUT:/nodes/")+String(bn3[1])+String("/attributes/")+String(bn3[2])+String("?target_value=1");
+      webSocket.sendTXT(str);
+    }
+  }
+  if (myButton4.event == E_TOUCH ) {
+    if (bnstate[4] == 1.00) {
+      String str  = String("PUT:/nodes/")+String(bn4[1])+String("/attributes/")+String(bn4[2])+String("?target_value=0");
+      webSocket.sendTXT(str);
+    }
+    else if ( bnstate[4] == 0.00) {
+       String str  = String("PUT:/nodes/")+String(bn4[1])+String("/attributes/")+String(bn4[2])+String("?target_value=1");
+      webSocket.sendTXT(str);
+    }
+  }
+  if (myButton5.event == E_TOUCH ) {
+    if (bnstate[5] == 1.00) {
+      String str  = String("PUT:/nodes/")+String(bn5[1])+String("/attributes/")+String(bn5[2])+String("?target_value=0");
+      webSocket.sendTXT(str);
+    }
+    else if ( bnstate[5] == 0.00) {
+       String str  = String("PUT:/nodes/")+String(bn5[1])+String("/attributes/")+String(bn5[2])+String("?target_value=1");
+      webSocket.sendTXT(str);
+    }
+  }
+  if (myButton6.event == E_TOUCH ) {
+    if (bnstate[6] == 1.00) {
+      String str  = String("PUT:/nodes/")+String(bn6[1])+String("/attributes/")+String(bn6[2])+String("?target_value=0");
+      webSocket.sendTXT(str);
+    }
+    else if ( bnstate[6] == 0.00) {
+       String str  = String("PUT:/nodes/")+String(bn6[1])+String("/attributes/")+String(bn6[2])+String("?target_value=1");
+      webSocket.sendTXT(str);
     }
   }
 }
