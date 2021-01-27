@@ -89,6 +89,7 @@ void setup() {
   M5.Lcd.setFont(FSS12);
   M5.Buttons.draw();
   myButton.longPressTime = 700;
+  M5.Lcd.drawPngFile(SD, "/icon/link-variant-off.png", 280, 200);// WS Link disconnect
   M5.Axp.SetLed(0);
  // Websocket Beginn
   webSocket.setExtraHeaders("protocolVersion: 13, origin: 192.168.178.80 ,handshakeTimeout: 5000");
@@ -106,6 +107,27 @@ void loop() {
   timeClient.update();
   ntp();
   buttonrequest();
+  test(); // kamerabild eingebunden 5 minuten Intervall
+}
+
+void test() {
+  if (timeClient.getMinutes() == 59) {
+    lasttime1 = 0;
+  }
+  if (((timeClient.getMinutes() - lasttime1) > 2) && seite == 2) {
+    lasttime1 = timeClient.getMinutes();
+    M5.Lcd.fillRect(0, 38, 320, 161, BLACK);
+    M5.Lcd.drawPngUrl("http://00.00.00.00:80/test.png", 0, 40, 320, 160, 0, 0, 1);// IP der CAM oder des PI ACHTIUNG PNG File benötigt 320/240
+    M5.Lcd.setFont(FSS9);
+    M5.Lcd.setCursor(0, 198);
+    M5.Lcd.print(timeClient.getHours());
+    M5.Lcd.print(":");
+    if (timeClient.getMinutes() < 10) {
+      M5.Lcd.print("0");
+    };
+    M5.Lcd.println(timeClient.getMinutes());
+    M5.Lcd.setFont(FSS12);
+  }
 }
 
 void ntp() {
@@ -185,11 +207,9 @@ void webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
     case WStype_FRAGMENT_FIN:
       break;
   };
-  payload1 = payload;
-  attribute();
+ attribute(payload);
 }
 void icon() {
-  M5.Lcd.drawPngFile(SD, "/icon/link-variant-off.png", 280, 200);
   M5.Lcd.drawPngFile(SD, "/icon/lightning-bolt-outline.png", 1, 200);
   M5.Lcd.drawPngFile(SD, "/icon/temperature-celsius.png", 240, 4);
   M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on-outline24.png", 10, 50);// Button 1 off
@@ -203,18 +223,29 @@ void icon() {
 void pagemenu() {
   if (Page1.event == E_TOUCH) {
     seite = 0;
-    webSocket.sendTXT("GET:/nodes/-1"); // 
+    webSocket.sendTXT("GET:/nodes/-1");
+    M5.Lcd.fillRect(0, 38, 320, 162, BLACK);
+    M5.Buttons.draw();
+    page1();
   };
   if (Page2.event == E_TOUCH) {
     seite = 1;
-    M5.Lcd.writecommand(ILI9341_DISPOFF);
-    M5.Lcd.setBrightness(0);
+    M5.Lcd.fillRect(0, 38, 320, 160, BLACK);
   };
   if (Page3.event == E_TOUCH) {
     seite = 2;
-    M5.Lcd.writecommand(ILI9341_DISPON);
-    M5.Lcd.setBrightness(100);
+    M5.Lcd.fillRect(0, 38, 320, 160, BLACK);
+    myButton.hide(BLACK);
+    M5.Lcd.drawPngUrl("http://00.00.00.00:80/test.png", 0, 40, 320, 160, 0, 0, 1); // IP CAMERA ODER PI 
   };
+}
+void page1() {
+  buttonstate1();
+  buttonstate2();
+  buttonstate3();
+  buttonstate4();
+  buttonstate5();
+  buttonstate6();
 }
 
 void cellular() {
@@ -236,11 +267,12 @@ void cellular() {
   }
 }
 
-void attribute() {
+void attribute(uint8_t * payload) {
   //JSON Dokument erstellen
-  deserializeJson(doc, payload1);
+  deserializeJson(doc, payload);
   JsonObject object = doc.as<JsonObject>();
   // Variablen erstellen
+  float node_id = doc["attribute"]["node_id"].as<float>();
   float attributtype = doc["attribute"]["type"].as<float>();
   float attributid = doc["attribute"]["id"].as<float>();
   float current_value = doc["attribute"]["current_value"].as<float>();
@@ -339,75 +371,34 @@ void attribute() {
       M5.Lcd.printf("%6.1f ", current_value);
     }
   };
- //Button status
-  if (attributid == atof(bn1[2])) {
-    if (current_value == 1) {
-      bnstate[1] = 1;
-      M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on24.png", 10, 50);
-    }
-    if (current_value == 0) {
-      bnstate[1] = 0;
-      M5.Lcd.fillRect(10, 50, 24 , 24, BLACK);
-      M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on-outline24.png", 10, 50);
-    }
+ //Button state
+ if (attributid == atof(bn1[2])) {
+    bnstate[1] = current_value;
+    buttonstate1();
   }
   if (attributid == atof(bn2[2])) {
-    if (current_value == 1) {
-      bnstate[2] = 1;
-      M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on24.png", 10, 105);
-    }
-    if (current_value == 0) {
-      bnstate[2] = 0;
-      M5.Lcd.fillRect(10, 105, 24 , 24, BLACK);
-      M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on-outline24.png", 10, 105);
-    }
+    bnstate[2] = current_value;
+    buttonstate2();
   }
+
   if (attributid == atof(bn3[2])) {
-    if (current_value == 1) {
-      bnstate[3] = 1;
-      M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on24.png", 10, 160);
-    }
-    if (current_value == 0) {
-      bnstate[3] = 0;
-      M5.Lcd.fillRect(10, 160, 24 , 24, BLACK);
-      M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on-outline24.png", 10, 160);
-    }
+    bnstate[3] = current_value ;
+    buttonstate3();
   }
   if (attributid == atof(bn4[2])) {
-    if (current_value == 1) {
-      bnstate[4] = 1;
-      M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on24.png", 170, 50);
-    }
-    if (current_value == 0) {
-      bnstate[1] = 0;
-      M5.Lcd.fillRect(170, 50, 24 , 24, BLACK);
-      M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on-outline24.png", 170, 50);
-    }
+    bnstate[4] = current_value;
+    buttonstate4();
   }
+
   if (attributid == atof(bn5[2])) {
-    if (current_value == 1) {
-      bnstate[5] = 1;
-      M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on24.png", 170, 105);
-    }
-    if (current_value == 0) {
-      bnstate[5] = 0;
-      M5.Lcd.fillRect(170, 105, 24 , 24, BLACK);
-      M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on-outline24.png", 170, 105);
-    }
+    bnstate[5] = current_value;
+    buttonstate5();
   }
   if (attributid == atof(bn6[2])) {
-    if (current_value == 1) {
-      bnstate[6] = 1;
-      M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on24.png", 170, 160);
-    }
-    if (current_value == 0) {
-      bnstate[6] = 0;
-      M5.Lcd.fillRect(170, 160, 24 , 24, BLACK);
-      M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on-outline24.png", 170, 160);
-    }
+    bnstate[6] = current_value;
+    buttonstate6();
   }
 }
-
 void buttonrequest() {
   if (myButton.event == E_TOUCH ) {
     if (bnstate[1] == 1.00) {
@@ -470,12 +461,53 @@ void buttonrequest() {
     }
   }
 }
-void wetter() {
-
+void buttonstate1() {
+  if (bnstate[1] == 1) {
+    M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on24.png", 10, 50);
+  } else
+    M5.Lcd.fillRect(10, 50, 24 , 24, BLACK);
+  M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on-outline24.png", 10, 50);
 }
-void startpage() {
-
+void buttonstate2() {
+  if (bnstate[2] == 1) {
+    M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on24.png", 10, 105);
+  } else
+    M5.Lcd.fillRect(10, 105, 24 , 24, BLACK);
+  M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on-outline24.png", 10, 105);
 }
+
+void buttonstate3() {
+  if (bnstate[3] == 1) {
+    M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on24.png", 10, 160);
+  } else
+    M5.Lcd.fillRect(10, 160, 24 , 24, BLACK);
+  M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on-outline24.png", 10, 160);
+}
+
+void buttonstate4() {
+  if (bnstate[4] == 1) {
+    M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on24.png", 170, 50);
+  } else
+    M5.Lcd.fillRect(170, 50, 24 , 24, BLACK);
+  M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on-outline24.png", 170, 50);
+}
+
+void buttonstate5() {
+  if (bnstate[5] == 1) {
+    M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on24.png", 170, 105);
+  } else
+    M5.Lcd.fillRect(170, 105, 24 , 24, BLACK);
+  M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on-outline24.png", 170, 105);
+}
+
+void buttonstate6() {
+  if (bnstate[6] == 1) {
+    M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on24.png", 170, 160);
+  } else
+    M5.Lcd.fillRect(170, 160, 24 , 24, BLACK);
+  M5.Lcd.drawPngFile(SD, "/icon/lightbulb-on-outline24.png", 170, 160);
+}
+
 void disp() {
   delay(2000);
   M5.Lcd.writecommand(ILI9341_DISPOFF);
