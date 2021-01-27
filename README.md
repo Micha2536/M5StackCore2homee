@@ -37,3 +37,8 @@ const char* bn1[] = {"Sideboard", "555", "1769"};
 
 
 The folder icon must upload on the SD Card
+
+Update
+-new buttonstate 
+-snapshot from url as png
+-you can switch the page and the buttonstate is like befor
