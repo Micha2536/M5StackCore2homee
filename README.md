@@ -14,11 +14,9 @@ In the sketch edit WIFI password and SSID, the homee token can you find in the b
 You must open the webapp and then open the developer mode and lokal storage. 
 homeeID.accessToken = XXXXXXXXX
 
-webSocket.begin("homeeIP", 7681, "/connection?access_token=YOURTOKEN", "v2");
-
 The attributID and nodeID find under the https://terminal.pascalmattes.de/
 
-New config for the button
+New config for the button and state
 
 // conficuration Wlan
 
