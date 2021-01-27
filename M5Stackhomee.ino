@@ -29,6 +29,7 @@ int seite = 0;
 int rssiold = 0;
 uint8_t * payload1;
 float lasttime = 0;
+float lasttime1 = 0;
 
 DynamicJsonDocument doc(ESP.getMaxAllocHeap());
 
