@@ -13,6 +13,8 @@ You need this Library
 In the sketch edit WIFI password and SSID, the homee token can you find in the browser.
 You must open the webapp and then open the developer mode and lokal storage. 
 homeeID.accessToken = XXXXXXXXX
+In some browsers there is also the following value: local_homee_IP.access_token = XXXXXXXXX
+You might test both, if you have connection issues.
 
 The attributID and nodeID find under the https://terminal.pascalmattes.de/
 
