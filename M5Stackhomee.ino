@@ -2,7 +2,6 @@
 #include <WiFi.h>
 #include <ArduinoJson.h>
 #include <Arduino.h>
-#include <HTTPClient.h>
 #include <WebSocketsClient.h>
 #include <NTPClient.h>
 #include <WiFiUdp.h>
