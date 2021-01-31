@@ -30,7 +30,7 @@ const char* bn4[] = {"Erker L", "1020", "2679"};
 const char* bn5[] = {"Erker R", "1023", "2698"};
 const char* bn6[] = {"Matmos", "266", "1087"};
 
-//sensor local outdoor 
+//sensor local outdoor AttributID
 
 const char* outsen[] = {"0"};
 
