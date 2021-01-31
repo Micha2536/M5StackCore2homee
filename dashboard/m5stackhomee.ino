@@ -30,6 +30,10 @@ const char* bn4[] = {"Erker L", "1020", "2679"};
 const char* bn5[] = {"Erker R", "1023", "2698"};
 const char* bn6[] = {"Matmos", "266", "1087"};
 
+//sensor local outdoor 
+
+const char* outsen[] = {"0"};
+
 //Button State Storage
 
 float bnstate[20];
@@ -541,7 +545,7 @@ void attribute( uint8_t * payload) {
   };
 
   // Temperatur Outdoor
-  if (attributid == 1786) {
+  if (attributid == atof(outsen[0])) {
     if ((current_value > 9.99) || ( current_value < 0.00)) {
       M5.Lcd.fillRect(180, 0, 60 , 36, BLACK);
       M5.Lcd.setCursor(181, 24);
