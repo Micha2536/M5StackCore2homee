@@ -9,6 +9,9 @@ You need this Library
  https://github.com/arduino-libraries/NTPClient
                       
  https://github.com/m5stack/M5Core2
+ 
+ https://github.com/riotnetwork/ArduinoNvs
+ 
 
 In the sketch edit WIFI password and SSID, the homee token can you find in the browser.
 You must open the webapp and then open the developer mode and lokal storage. 
@@ -47,3 +50,10 @@ Update
 -snapshot from url as png
 
 -you can switch the page and the buttonstate is like befor
+
+Update 06.02.2021 M5WebUiButton
+
+new Webui to config the M5StackCore2.
+you dont need config in the sketch.
+open the Webui 192.168.4.1 
+config your WLAN, homeeIP and accessToken
