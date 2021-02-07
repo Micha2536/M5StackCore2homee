@@ -205,6 +205,7 @@ void webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
   if (seite == 3 ) {
     nodeabf(payload);
   }
+  nodeabfrage(payload);
 }
 
 // icon on SD card
