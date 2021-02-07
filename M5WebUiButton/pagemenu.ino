@@ -16,12 +16,19 @@ void pagemenu() {
    // luft();
   };
   if (Page3.event == E_TOUCH) {
-    seite = 3;
-    M5.Lcd.fillRect(0, 38, 320, 160, BLACK);
-    //M5.Lcd.sleep();
-    M5.Lcd.setBrightness(10);
-    M5.Lcd.setCursor(50, 80);
-    keyboard();
+    if (seite != 3 ) {
+      seite = 3;
+      M5.Lcd.fillRect(0, 38, 320, 160, BLACK);
+      //M5.Lcd.sleep();
+      M5.Lcd.setBrightness(10);
+      M5.Lcd.setCursor(50, 80);
+      keyboard();
+    }
+    else if (seite == 3) {
+      seite = 4;
+      M5.Lcd.fillRect(0, 38, 320, 160, BLACK);
+
+    }
   }
 }
 void page1() {
