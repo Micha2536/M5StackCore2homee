@@ -80,15 +80,15 @@ void attribute( uint8_t * payload) {
     Serial.println(doc["attribute"]["unit"].as<char*>());
     ssdst();
   };
-  //Gesamtverbrauch LEISTUNG IN WATT
-  if (attributid == 3028) {
+  //Gesamtverbrauch LEISTUNG IN WATT bei 0 bitte die Attribut id des Gesamtverbrauchszähler angeben
+  if (attributid == 0) {
     M5.Lcd.fillRect(36, 205, 120 , 23, BLACK);
     M5.Lcd.setCursor(36, 225);
     M5.Lcd.printf("%6.1f W", current_value);
   };
 
   // Temperatur Outdoor
-  if (attributid == atof(TempOut.c_str())) {//1786
+  if (attributid == atof(TempOut.c_str()) || attributtype == 244) {
     if ((current_value > 9.99) || ( current_value < 0.00)) {
       M5.Lcd.fillRect(180, 0, 60 , 36, BLACK);
       M5.Lcd.setCursor(181, 24);
