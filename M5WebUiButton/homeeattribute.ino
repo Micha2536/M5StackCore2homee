@@ -11,7 +11,7 @@ void attribute( uint8_t * payload) {
   float current_value = doc["attribute"]["current_value"].as<float>();
 
   //Wetter icon
-  if ((doc["node"]["attributes"][3]["type"].as<float>() == 243) || (attributid == 1322)) {
+  if ((doc["node"]["attributes"][3]["type"].as<float>() == 243) || (attributtype == 243)) {
     Serial.println(doc["node"]["attributes"][3]["current_value"].as<float>());
     M5.Lcd.fillRect(140, 0, 35, 35, BLACK);
     if ((doc["node"]["attributes"][3]["current_value"].as<float>() == 7) || ( current_value == 7)) {
