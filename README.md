@@ -11,6 +11,13 @@ You need this Library
  https://github.com/m5stack/M5Core2
  
  https://github.com/riotnetwork/ArduinoNvs
+
+
+https://github.com/me-no-dev/AsyncTCP
+
+https://github.com/me-no-dev/ESPAsyncWebServer
+
+
  
 
 In the sketch edit WIFI password and SSID, the homee token can you find in the browser.
