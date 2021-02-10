@@ -17,6 +17,8 @@ https://github.com/me-no-dev/AsyncTCP
 
 https://github.com/me-no-dev/ESPAsyncWebServer
 
+https://github.com/riotnetwork/ArduinoNvs
+
 
  
 
@@ -28,6 +30,24 @@ You might test both, if you have connection issues.
 
 The attributID and nodeID find under the https://terminal.pascalmattes.de/
 
+
+
+
+
+
+
+Update 10.02.2021 
+Version 0.7
+
+-new webUi , config wlan and button
+
+-new button 1,2,4 or 6
+
+-new debug mode (page 4)
+
+
+
+___________________________________________________________________________________________________
 New config for the button and state
 
 // conficuration Wlan
