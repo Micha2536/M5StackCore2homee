@@ -32,6 +32,13 @@ The attributID and nodeID find under the https://terminal.pascalmattes.de/
 
 
 
+Update 19.02.2021
+Version 0.7.2
+
+- change webui
+
+- you dont need the attribut id  for the config
+
 
 
 
